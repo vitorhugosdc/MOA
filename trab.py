@@ -49,13 +49,13 @@ c = np.array([3, 5])
 
 # Coefficients of the constraints
 A = np.array([
+    [3, 2],
     [1, 0],
     [0, 2],
-    [3, 2]
 ])
 
 # Right-hand side of the constraints
-b = np.array([4, 12, 18])
+b = np.array([18, 4, 12])
 
 # Run the simplex algorithm
 final_tableau = simplex(c, A, b)
