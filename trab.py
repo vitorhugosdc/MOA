@@ -1,68 +1,74 @@
 import numpy as np
 
-def print_tableau(T, step):
-    print(f"Tableau at step {step}:")
-    print(T, "\n")
+def print_tableau(T, B, N, C_B, C_N, step):
+    print(f"Iteração {step}:")
+    print("Tableau:")
+    print(np.round(T, 2))
+    print("Base (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
+    print("Não base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
+    print("Custo da Base C_B^T:", np.round(C_B, 2))
+    print("Custo da Não Base C_N^T:", np.round(C_N, 2), "\n")
 
-def pivot(T, pivot_row, pivot_col):
-    # Divide all elements in the pivot row by the pivot element
+def pivot(T, pivot_row, pivot_col, B, N):
+    # Realiza a operação de pivô
     T[pivot_row, :] /= T[pivot_row, pivot_col]
-    # Subtract multiples of the pivot row from all other rows
     for i in range(len(T)):
         if i != pivot_row:
             T[i, :] -= T[i, pivot_col] * T[pivot_row, :]
-    return T
+    B[pivot_row] = N[pivot_col]  # Atualiza o índice da variável básica
+    return T, B
 
 def simplex(c, A, b):
-    num_vars = len(c)
-    # Construct the initial simplex tableau
-    T = np.hstack([A, np.eye(len(A)), b.reshape(-1, 1)])
-    T = np.vstack([T, np.hstack([-c, np.zeros(len(A) + 1)])])
-    print_tableau(T, "Initial")
-    
+    num_constraints = A.shape[0]
+    num_variables = A.shape[1]
+    T = np.hstack((A, np.eye(num_constraints), b.reshape((-1, 1))))
+    T = np.vstack((T, np.hstack((-c, np.zeros(num_constraints + 1)))))
+    B = list(range(num_variables, num_variables + num_constraints))  # Índices das variáveis de folga
+    N = list(range(num_variables))  # Índices das variáveis originais
+    C_B = np.zeros(num_constraints)  # Custos das variáveis básicas iniciais são 0
+    C_N = c.copy()  # Custos das variáveis não básicas iniciais
+
+    step = 0
+    print_tableau(T, B, N, C_B, C_N, step)
+
     while True:
-        # Check if we have reached the optimal solution
-        if np.all(T[-1, :-1] >= 0):
-            print("Optimal solution found.")
+        if np.all(T[-1, :-num_constraints] >= 0):
+            print("Solução ótima encontrada.")
             break
-        
-        # Choose entering variable (most negative coefficient in the objective function)
-        pivot_col = np.argmin(T[-1, :-1])
-        
-        # Ratio test to choose leaving variable
-        ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col]>0)
+
+        pivot_col = np.argmin(T[-1, :-num_constraints])
+        ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col] > 0)
         pivot_row = np.argmin(ratios)
-        
-        # If all entries in the pivot column are <= 0, the solution is unbounded
         if np.all(T[:-1, pivot_col] <= 0):
-            print("Unbounded solution.")
-            break
-        
-        # Pivot
-        T = pivot(T, pivot_row, pivot_col)
-        print_tableau(T, f"Pivot at row {pivot_row}, col {pivot_col}")
-    
-    return T
+            print("Solução ilimitada.")
+            return None
 
-# Coefficients of the objective function
+        T, B = pivot(T, pivot_row, pivot_col, B, N)
+        # Atualiza C_B e C_N após cada pivô
+        C_B = np.array([0 if bi >= num_variables else c[bi] for bi in B])
+        C_N = np.array([c[ni] if ni < num_variables and ni not in B else 0 for ni in range(num_variables)])
+        step += 1
+        print_tableau(T, B, N, C_B, C_N, step)
+
+    solution = np.zeros(num_variables)
+    for i, bi in enumerate(B):
+        if bi < num_variables:
+            solution[bi] = T[i, -1]
+    objective_value = -T[-1, -1]
+    return solution, objective_value, T, B, N
+
+# Coeficientes da função objetivo e restrições
 c = np.array([3, 5])
-
-# Coefficients of the constraints
 A = np.array([
     [3, 2],
     [1, 0],
     [0, 2],
 ])
-
-# Right-hand side of the constraints
 b = np.array([18, 4, 12])
 
-# Run the simplex algorithm
-final_tableau = simplex(c, A, b)
+# Executa o algoritmo Simplex
+solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 
-# Extract solution
-if final_tableau is not None:
-    solution = final_tableau[:-1, -1]
-    objective_value = -final_tableau[-1, -1]
-    print("Solution:", solution)
-    print("Objective value:", objective_value)
+# Imprime a solução final e o valor da função objetivo
+print("Solução final:", solution)
+print("Valor da função objetivo:", objective_value)
