@@ -7,7 +7,15 @@ def print_tableau(T, B, N, C_B, C_N, step):
     print("Base (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
     print("Não base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
     print("Custo da Base C_B^T:", np.round(C_B, 2))
-    print("Custo da Não Base C_N^T:", np.round(C_N, 2), "\n")
+    print("Custo da Não Base C_N^T:", np.round(C_N, 2))
+    
+    # Imprime as matrizes da base (B) e da não base (N)
+    B_matrix = T[:, B]
+    N_matrix = T[:, N]
+    print("\nMatriz da Base (B):")
+    print(np.round(B_matrix, 2))
+    print("\nMatriz da Não Base (N):")
+    print(np.round(N_matrix, 2), "\n")
 
 def pivot(T, pivot_row, pivot_col, B, N):
     # Realiza a operação de pivô
