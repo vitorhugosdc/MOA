@@ -22,11 +22,11 @@ def simplex(c, A, b):
     num_constraints = A.shape[0]
     num_variables = A.shape[1]
     T = np.hstack((A, np.eye(num_constraints), b.reshape((-1, 1))))
-    T = np.vstack((T, np.hstack((-c, np.zeros(num_constraints + 1)))))
+    T = np.vstack((T, np.hstack(([-ci for ci in c], np.zeros(num_constraints + 1)))))
     B = list(range(num_variables, num_variables + num_constraints))  # Índices das variáveis de folga
     N = list(range(num_variables))  # Índices das variáveis originais
     C_B = np.zeros(num_constraints)  # Custos das variáveis básicas iniciais são 0
-    C_N = c.copy()  # Custos das variáveis não básicas iniciais
+    C_N = [-ci for ci in c]  # Custos das variáveis não básicas iniciais (negativos)
 
     step = 0
     print_tableau(T, B, N, C_B, C_N, step)
@@ -45,8 +45,8 @@ def simplex(c, A, b):
 
         T, B = pivot(T, pivot_row, pivot_col, B, N)
         # Atualiza C_B e C_N após cada pivô
-        C_B = np.array([0 if bi >= num_variables else c[bi] for bi in B])
-        C_N = np.array([c[ni] if ni < num_variables and ni not in B else 0 for ni in range(num_variables)])
+        C_B = [0 if bi >= num_variables else -c[bi] for bi in B]  # Use o sinal correto para C_B
+        C_N = [-c[ni] if ni < num_variables and ni not in B else 0 for ni in range(num_variables)]  # Mantenha o sinal correto para C_N
         step += 1
         print_tableau(T, B, N, C_B, C_N, step)
 
