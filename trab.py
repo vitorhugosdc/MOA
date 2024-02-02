@@ -58,10 +58,9 @@ def simplex(c, A, b):
         step += 1
         print_tableau(T, B, N, C_B, C_N, step)
 
-    solution = np.zeros(num_variables)
+    solution = np.zeros(num_variables + num_constraints)
     for i, bi in enumerate(B):
-        if bi < num_variables:
-            solution[bi] = T[i, -1]
+        solution[bi] = T[i, -1]
     objective_value = -T[-1, -1]
     return solution, objective_value, T, B, N
 
