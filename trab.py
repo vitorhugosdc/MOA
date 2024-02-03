@@ -1,20 +1,20 @@
 import numpy as np
 
 def print_tableau(T, B, N, C_B, C_N, step):
-    print(f"Iteração {step}:")
+    print(f"Iteracao {step}:")
     print("Tableau:")
     print(np.round(T, 2))
     print("Base (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
-    print("Não base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
+    print("Nao base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
     print("Custo da Base C_B^T:", np.round(C_B, 2))
-    print("Custo da Não Base C_N^T:", np.round(C_N, 2))
+    print("Custo da Nao Base C_N^T:", np.round(C_N, 2))
     
     # Imprime as matrizes da base (B) e da não base (N)
     B_matrix = T[:, B]
     N_matrix = T[:, N]
     print("\nMatriz da Base (B):")
     print(np.round(B_matrix, 2))
-    print("\nMatriz da Não Base (N):")
+    print("\nMatriz da Nao Base (N):")
     print(np.round(N_matrix, 2), "\n")
 
 def pivot(T, pivot_row, pivot_col, B, N):
@@ -41,14 +41,14 @@ def simplex(c, A, b):
 
     while True:
         if np.all(T[-1, :-num_constraints] >= 0):
-            print("Solução ótima encontrada.")
+            print("Solucao otima encontrada.")
             break
 
         pivot_col = np.argmin(T[-1, :-num_constraints])
         ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col] > 0)
         pivot_row = np.argmin(ratios)
         if np.all(T[:-1, pivot_col] <= 0):
-            print("Solução ilimitada.")
+            print("Solucao ilimitada.")
             return None
 
         T, B = pivot(T, pivot_row, pivot_col, B, N)
@@ -77,5 +77,5 @@ b = np.array([18, 4, 12])
 solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 
 # Imprime a solução final e o valor da função objetivo
-print("Solução final:", solution)
-print("Valor da função objetivo:", objective_value)
+print("Solucao final:", solution)
+print("Valor da funcao objetivo:", objective_value)
