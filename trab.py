@@ -41,20 +41,27 @@ def simplex(c, A, b):
     print_tableau(T, B, N, C_B, C_N, step)
 
     while True:
-        print(f"\nPasso 2: Determinacao da coluna de entrada.")
         if np.all(T[-1, :-num_constraints] >= 0):
             print("Todos os custos reduzidos sao >= 0. Solucao otima encontrada.")
             break
 
-        pivot_col = np.argmin(T[-1, :-num_constraints])
+        # Determinação da coluna de entrada
+        print(f"\nPasso 2: Determinacao da coluna de entrada.")
+        pivot_col_values = T[-1, :-num_constraints]
+        for i, cv in enumerate(pivot_col_values, start=1):
+            print(f"C_N[{i}] = {cv}")
+        pivot_col = np.argmin(pivot_col_values)
         print(f"Variavel N[{pivot_col + 1}] entra na base porque tem o menor custo reduzido, C_N[{pivot_col + 1}] = {T[-1, pivot_col]}.")
 
+        # Determinação da linha de saída
         print("\nPasso 4: Determinacao da linha de saida.")
         ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col] > 0)
+        for i, ratio in enumerate(ratios, start=1):
+            if ratio != np.inf:
+                print(f"Razao para B[{i}]: {ratio}")
+            else:
+                print(f"Razao para B[{i}]: Infinito (variavel fora da consideracao)")
         pivot_row = np.argmin(ratios)
-        if np.all(T[:-1, pivot_col] <= 0):
-            print("Todos os elementos na coluna de pivo são <= 0. Solução ilimitada.")
-            return None
         print(f"Variavel B[{pivot_row + 1}] sai da base porque tem o menor ratio, E = {ratios[pivot_row]}.")
 
         T, B = pivot(T, pivot_row, pivot_col, B, N)
