@@ -1,7 +1,8 @@
 import numpy as np
 
 def print_tableau(T, B, N, C_B, C_N, step):
-    print(f"Iteracao {step}:")
+    print("\n\n-------------------------------------------------------------------------------------------")
+    print(f"\nIteracao {step+1}:")
     print("Tableau:")
     print(np.round(T, 2))
     print("Base (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
