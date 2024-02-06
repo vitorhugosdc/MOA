@@ -40,18 +40,25 @@ def simplex(c, A, b):
     print_tableau(T, B, N, C_B, C_N, step)
 
     while True:
+        print(f"\nPasso 2: Determinacao da coluna de entrada.")
         if np.all(T[-1, :-num_constraints] >= 0):
-            print("Solucao otima encontrada.")
+            print("Todos os custos reduzidos sao >= 0. Solucao otima encontrada.")
             break
 
         pivot_col = np.argmin(T[-1, :-num_constraints])
+        print(f"Variavel N[{pivot_col + 1}] entra na base porque tem o menor custo reduzido, C_N[{pivot_col + 1}] = {T[-1, pivot_col]}.")
+
+        print("\nPasso 4: Determinacao da linha de saida.")
         ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col] > 0)
         pivot_row = np.argmin(ratios)
         if np.all(T[:-1, pivot_col] <= 0):
-            print("Solucao ilimitada.")
+            print("Todos os elementos na coluna de pivo são <= 0. Solução ilimitada.")
             return None
+        print(f"Variavel B[{pivot_row + 1}] sai da base porque tem o menor ratio, E = {ratios[pivot_row]}.")
 
         T, B = pivot(T, pivot_row, pivot_col, B, N)
+        print(f"\nPasso 5: Operacao de pivo concluida. Variavel B[{pivot_row + 1}] foi substituida por N[{pivot_col + 1}].")
+
         # Atualiza C_B e C_N após cada pivô
         C_B = [0 if bi >= num_variables else -c[bi] for bi in B]  # Use o sinal correto para C_B
         C_N = [-c[ni] if ni < num_variables and ni not in B else 0 for ni in range(num_variables)]  # Mantenha o sinal correto para C_N
