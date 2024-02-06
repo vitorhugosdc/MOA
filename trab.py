@@ -22,8 +22,16 @@ def pivot(T, pivot_row, pivot_col, B, N):
     for i in range(len(T)):
         if i != pivot_row:
             T[i, :] -= T[i, pivot_col] * T[pivot_row, :]
-    B[pivot_row] = N[pivot_col]  # Atualiza o índice da variável básica
-    return T, B
+
+    # Atualiza os índices da variável que entra e sai da base
+    leaving_var = B[pivot_row]  # A variável que sai da base
+    entering_var = N[pivot_col]  # A variável que entra na base
+
+    # Atualiza B e N
+    B[pivot_row] = entering_var
+    N[pivot_col] = leaving_var
+
+    return T, B, N
 
 def simplex(c, A, b):
     num_constraints = A.shape[0]
@@ -63,7 +71,7 @@ def simplex(c, A, b):
         pivot_row = np.argmin(ratios)
         print(f"Variavel B[{pivot_row + 1}] sai da base porque tem o menor ratio, E = {ratios[pivot_row]}.")
 
-        T, B = pivot(T, pivot_row, pivot_col, B, N)
+        T, B, N = pivot(T, pivot_row, pivot_col, B, N)
         print(f"\nPasso 5: Operacao de pivo concluida. Variavel B[{pivot_row + 1}] foi substituida por N[{pivot_col + 1}].")
 
         # Atualiza C_B e C_N após cada pivô
