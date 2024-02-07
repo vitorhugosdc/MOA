@@ -111,7 +111,7 @@ def simplex(c, A, b):
     objective_value = -T[-1, -1]
     return solution, objective_value, T, B, N
 
-c, A, b, problem_type = read_input('in2.txt')
+c, A, b, problem_type = read_input('max.txt')
 solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 
 if problem_type != 'min':
