@@ -66,7 +66,9 @@ def simplex(c, A, b):
         if np.all(T[-1, :-num_constraints] >= 0):
             print("Todos os custos reduzidos sao >= 0. Solucao otima encontrada.")
             break
-
+        
+        print(f"\nPasso 1: X_B = B^-1 * b")
+        print(f"\nX_B = {np.linalg.inv(original_T[:, B])} * {T[:-1, -1]}\n")   
         # Determinação da coluna de entrada
         print(f"\nPasso 2: Determinacao da coluna de entrada.\n")
         lambda_ = np.dot(C_B, np.linalg.inv(original_T[:, B]))        
@@ -117,5 +119,9 @@ solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 if problem_type != 'min':
     objective_value = -objective_value
 # Imprime a solução final e o valor da função objetivo
+
+print(np.round(final_tableau, 2))
+print("\nBase (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
+print("Nao base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
 print("Solucao final:", solution)
 print("Valor da funcao objetivo:", objective_value)
