@@ -87,8 +87,14 @@ def simplex(c, A, b):
         pivot_col = np.argmin(pivot_col_values)
         print(f"\nVariavel N[{pivot_col + 1}] entra na base C_N[{pivot_col + 1}] = {T[-1, pivot_col]}.")
 
+        print(f'\nPasso 3: C_Nk = {T[-1, pivot_col]} >= 0? Nao, entao continuamos\n')
+
+
+        print('Passo 4: y = B^-1 A_Nk')
+        print(f'y = {np.linalg.inv(original_T[:, B])} {original_T[:, N[pivot_col]]}')
+        
         # Determinação da linha de saída
-        print("\nPasso 4: Determinacao da linha de saida.")
+        print("\nPasso 5: Determinacao da linha de saida.")
         ratios = np.divide(T[:-1, -1], T[:-1, pivot_col], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, pivot_col] > 0)
         for i, ratio in enumerate(ratios, start=1):
             if ratio != np.inf:
@@ -96,10 +102,10 @@ def simplex(c, A, b):
             else:
                 print(f"Razao para B[{i}]: Infinito (variavel fora da consideracao)")
         pivot_row = np.argmin(ratios)
-        print(f"Variavel B[{pivot_row + 1}] sai da base porque tem o menor ratio, E = {ratios[pivot_row]}.")
+        print(f"\nVariavel B[{pivot_row + 1}] sai da base porque tem o menor ratio, E = {ratios[pivot_row]}.")
 
         T, B, N = pivot(T, pivot_row, pivot_col, B, N)
-        print(f"\nPasso 5: Operacao de pivo concluida. Variavel B[{pivot_row + 1}] foi substituida por N[{pivot_col + 1}].")
+        print(f"\nIteracao concluida. Variavel B[{pivot_row + 1}] foi substituida por N[{pivot_col + 1}].")
 
         # Atualiza C_B e C_N após cada pivô
         C_B = [0 if bi >= num_variables else -c[bi] for bi in B]  # Use o sinal correto para C_B
