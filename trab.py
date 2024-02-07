@@ -16,6 +16,18 @@ def print_tableau(T, original_T, B, N, C_B, C_N, step):
     print("\nMatriz da Nao Base (N):")
     print(np.round(original_T[:, N], 2), "\n")
 
+def read_input(file_path):
+    with open(file_path, 'r') as file:
+        c = np.array(list(map(float, file.readline().strip().split())))
+        num_constraints = int(file.readline().strip())
+        A = []
+        b = []
+        for _ in range(num_constraints):
+            row = list(map(float, file.readline().strip().split()))
+            A.append(row[:-1])
+            b.append(row[-1])
+    return c, np.array(A), np.array(b)
+
 def pivot(T, pivot_row, pivot_col, B, N):
     # Realiza a operação de pivô
     T[pivot_row, :] /= T[pivot_row, pivot_col]
@@ -96,16 +108,7 @@ def simplex(c, A, b):
     objective_value = -T[-1, -1]
     return solution, objective_value, T, B, N
 
-# Coeficientes da função objetivo e restrições
-c = np.array([3, 5])
-A = np.array([
-    [3, 2],
-    [1, 0],
-    [0, 2],
-])
-b = np.array([18, 4, 12])
-
-# Executa o algoritmo Simplex
+c, A, b = read_input('in.txt')
 solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 
 # Imprime a solução final e o valor da função objetivo
