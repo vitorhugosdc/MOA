@@ -18,7 +18,10 @@ def print_tableau(T, original_T, B, N, C_B, C_N, step):
 
 def read_input(file_path):
     with open(file_path, 'r') as file:
+        problem_type = file.readline().strip()
         c = np.array(list(map(float, file.readline().strip().split())))
+        if problem_type == 'min':
+            c = -c
         num_constraints = int(file.readline().strip())
         A = []
         b = []
@@ -26,7 +29,7 @@ def read_input(file_path):
             row = list(map(float, file.readline().strip().split()))
             A.append(row[:-1])
             b.append(row[-1])
-    return c, np.array(A), np.array(b)
+    return c, np.array(A), np.array(b), problem_type
 
 def pivot(T, pivot_row, pivot_col, B, N):
     # Realiza a operação de pivô
@@ -108,9 +111,11 @@ def simplex(c, A, b):
     objective_value = -T[-1, -1]
     return solution, objective_value, T, B, N
 
-c, A, b = read_input('in.txt')
+c, A, b, problem_type = read_input('in2.txt')
 solution, objective_value, final_tableau, B, N = simplex(c, A, b)
 
+if problem_type != 'min':
+    objective_value = -objective_value
 # Imprime a solução final e o valor da função objetivo
 print("Solucao final:", solution)
 print("Valor da funcao objetivo:", objective_value)
