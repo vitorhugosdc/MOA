@@ -5,7 +5,7 @@ def print_tableau(T, original_T, B, N, C_B, C_N, step):
     print(f"\nIteracao {step+1}:")
     print("Tableau:")
     print(np.round(T, 2))
-    print("Base (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
+    print("\nBase (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
     print("Nao base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
     print("Custo da Base C_B^T:", np.round(C_B, 2))
     print("Custo da Nao Base C_N^T:", np.round(C_N, 2))
@@ -53,12 +53,22 @@ def simplex(c, A, b):
             break
 
         # Determinação da coluna de entrada
-        print(f"\nPasso 2: Determinacao da coluna de entrada.")
+        print(f"\nPasso 2: Determinacao da coluna de entrada.\n")
+        lambda_ = np.dot(C_B, np.linalg.inv(original_T[:, B]))        
+        print(f'i) lambda^T = C_B^T * B^-1 = \n\n{C_B} * {np.linalg.inv(original_T[:, B])} = \n{lambda_}\n')
+
+        print(f'ii) C_Nj = C_Nj - lambda^T a_Nj\n')
+        i = 0
+        for nj in N:
+            print(f'C_N{i+1} = C_N{i+1} - lambda^T a_N{i+1} = {C_N[i]} - {lambda_} * {original_T[:, nj]}')
+            i+=1
+        
+        print('\n\niii) C_Nk = min {C_N1},{C_N2}...\n')                    
         pivot_col_values = T[-1, :-num_constraints]
         for i, cv in enumerate(pivot_col_values, start=1):
-            print(f"C_N[{i}] = {cv}")
+            print(f"\nC_N[{i}] = {cv}")
         pivot_col = np.argmin(pivot_col_values)
-        print(f"Variavel N[{pivot_col + 1}] entra na base porque tem o menor custo reduzido, C_N[{pivot_col + 1}] = {T[-1, pivot_col]}.")
+        print(f"\nVariavel N[{pivot_col + 1}] entra na base C_N[{pivot_col + 1}] = {T[-1, pivot_col]}.")
 
         # Determinação da linha de saída
         print("\nPasso 4: Determinacao da linha de saida.")
