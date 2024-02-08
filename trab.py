@@ -58,11 +58,11 @@ def simplex(c, A, b):
 
     while True:
         if np.all(T[-1, :-num_restricoes] >= 0):
-            print("Todos os custos reduzidos sao >= 0. Solucao otima encontrada.")
+            print("Todos os custos reduzidos sao >= 0. Solucao otima encontrada.\n")
             break
         
         print(f"\nPasso 1: X_B = B^-1 * b")
-        print(f"\nX_B = \n{np.linalg.inv(T_original[:, B])} * {T[:-1, -1]} = {np.dot(np.linalg.inv(T_original[:, B]),T[:-1, -1])}\n")   
+        print(f"\nX_B = {T[:-1, -1]}\n")   
 
         print(f"\nPasso 2: Determinacao da coluna de entrada.\n")
         lambda_ = np.dot(C_B, np.linalg.inv(T_original[:, B]))        
@@ -71,7 +71,7 @@ def simplex(c, A, b):
         print(f'ii) C_Nj = C_Nj - lambda^T a_Nj\n')
         i = 0
         for nj in N:
-            print(f'C_N{i+1} = C_N{i+1} - lambda^T a_N{i+1} = {C_N[i]} - {lambda_} * {T_original[:, nj]}')
+            print(f'C_N[{i+1}] = C_N[{i+1}] - lambda^T a_N[{i+1}] = {C_N[i]} - {lambda_} * {T_original[:, nj]}')
             i+=1
         
         print('\n\niii) C_Nk = min {C_N1},{C_N2}...\n')                    
@@ -89,11 +89,11 @@ def simplex(c, A, b):
         
         print("\nPasso 5: Determinacao da coluna de saida.")
         razao = np.divide(T[:-1, -1], T[:-1, coluna_pivo], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, coluna_pivo] > 0)
-        for i, ratio in enumerate(razao, start=1):
-            if ratio != np.inf:
-                print(f"Razao para B[{i}]: {ratio}")
+        for i, razao_ in enumerate(razao, start=1):
+            if razao_ != np.inf:
+                print(f"Razao para B[{i}]: {razao_}")
             else:
-                print(f"Razao para B[{i}]: Infinito (variavel fora da consideracao)")
+                print(f"Razao para B[{i}]: Infinito (fora da consideracao)")
         linha_pivo = np.argmin(razao)
         print(f"\nColuna B[{linha_pivo + 1}] sai da base porque tem a menor razao, E = {razao[linha_pivo]}.")
 
@@ -113,12 +113,12 @@ def simplex(c, A, b):
     return solucao, valor_objetivo, T, B, N
 
 c, A, b, tipo_problema = leitura('max.txt')
-solucao, valor_objetivo, final_tableau, B, N = simplex(c, A, b)
+solucao, valor_objetivo, T_final, B, N = simplex(c, A, b)
 
 if tipo_problema != 'min':
     valor_objetivo = -valor_objetivo
 
-print(np.round(final_tableau, 2))
+print(f'T: \n{np.round(T_final, 2)}')
 print("\nBase (B):", [bi + 1 for bi in B])
 print("Nao base (N):", [ni + 1 for ni in N])
 print("Solucao final:", solucao)
