@@ -5,8 +5,8 @@ def print_passo(T, T_original, B, N, C_B, C_N, passo):
     print(f"\nIteracao {passo+1}:")
     print("T:")
     print(np.round(T, 2))
-    print("\nBase (B):", [bi + 1 for bi in B])  # Ajuste para indexação baseada em 1
-    print("Nao base (N):", [ni + 1 for ni in N])  # Ajuste para indexação baseada em 1
+    print("\nBase (B):", [bi + 1 for bi in B])
+    print("Nao base (N):", [ni + 1 for ni in N])
     print("Custo da Base C_B^T:", np.round(C_B, 2))
     print("Custo da Nao Base C_N^T:", np.round(C_N, 2))
     print("\nMatriz da Base (B):")
@@ -62,11 +62,11 @@ def simplex(c, A, b):
             break
         
         print(f"\nPasso 1: X_B = B^-1 * b")
-        print(f"\nX_B = {np.linalg.inv(T_original[:, B])} * {T[:-1, -1]}\n")   
-        
+        print(f"\nX_B = \n{np.linalg.inv(T_original[:, B])} * {T[:-1, -1]} = {np.dot(np.linalg.inv(T_original[:, B]),T[:-1, -1])}\n")   
+
         print(f"\nPasso 2: Determinacao da coluna de entrada.\n")
         lambda_ = np.dot(C_B, np.linalg.inv(T_original[:, B]))        
-        print(f'i) lambda^T = C_B^T * B^-1 = \n\n{C_B} * {np.linalg.inv(T_original[:, B])} = \n{lambda_}\n')
+        print(f'i) lambda^T = C_B^T * B^-1 = \n\n{C_B} * \n{np.linalg.inv(T_original[:, B])} = {lambda_}\n')
 
         print(f'ii) C_Nj = C_Nj - lambda^T a_Nj\n')
         i = 0
@@ -79,16 +79,15 @@ def simplex(c, A, b):
         for i, cv in enumerate(valores_coluna_pivo, start=1):
             print(f"\nC_N[{i}] = {cv}")
         coluna_pivo = np.argmin(valores_coluna_pivo)
-        print(f"\nVariavel N[{coluna_pivo + 1}] entra na base C_N[{coluna_pivo + 1}] = {T[-1, coluna_pivo]}.")
+        print(f"\nColuna N[{coluna_pivo + 1}] entra na base C_N[{coluna_pivo + 1}] = {T[-1, coluna_pivo]}.")
 
         print(f'\nPasso 3: C_Nk = {T[-1, coluna_pivo]} >= 0? Nao, entao continuamos\n')
 
 
-        print('Passo 4: y = B^-1 A_Nk')
-        print(f'y = {np.linalg.inv(T_original[:, B])} {T_original[:, N[coluna_pivo]]}')
+        print('Passo 4: y = B^-1 * A_Nk')
+        print(f'y = \n{np.linalg.inv(T_original[:, B])} * {T_original[:, N[coluna_pivo]]} = {np.dot(T_original[:, B],T_original[:, N[coluna_pivo]])}')
         
-        # Determinação da linha de saída
-        print("\nPasso 5: Determinacao da linha de saida.")
+        print("\nPasso 5: Determinacao da coluna de saida.")
         razao = np.divide(T[:-1, -1], T[:-1, coluna_pivo], out=np.full_like(T[:-1, -1], np.inf), where=T[:-1, coluna_pivo] > 0)
         for i, ratio in enumerate(razao, start=1):
             if ratio != np.inf:
@@ -96,10 +95,10 @@ def simplex(c, A, b):
             else:
                 print(f"Razao para B[{i}]: Infinito (variavel fora da consideracao)")
         linha_pivo = np.argmin(razao)
-        print(f"\nVariavel B[{linha_pivo + 1}] sai da base porque tem o menor ratio, E = {razao[linha_pivo]}.")
+        print(f"\nColuna B[{linha_pivo + 1}] sai da base porque tem a menor razao, E = {razao[linha_pivo]}.")
 
         T, B, N = pivo(T, linha_pivo, coluna_pivo, B, N)
-        print(f"\nIteracao concluida. Variavel B[{linha_pivo + 1}] foi substituida por N[{coluna_pivo + 1}].")
+        print(f"\nIteracao concluida. Coluna B[{linha_pivo + 1}] foi substituida por N[{coluna_pivo + 1}].")
 
         # Atualiza C_B e C_N após cada pivô
         C_B = [0 if bi >= num_variaveis else -c[bi] for bi in B]
