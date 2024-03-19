@@ -40,9 +40,12 @@ def mochileiro(arquivo):
                     n = int(linha.split()[1])
                     break
             matriz_distancia = np.array([list(map(int, linhas[i].split())) for i in range(index, index + n)])
-        elif 'EDGE_WEIGHT_TYPE: EUC_2D' in linhas:
+        elif 'EDGE_WEIGHT_TYPE : EUC_2D' in linhas:
             index = linhas.index('NODE_COORD_SECTION') + 1
-            n = int(linhas[linhas.index('DIMENSION: ') + 1].split()[1])
+            for linha in linhas:
+                if linha.startswith('DIMENSION'):
+                    n = int(linha.split()[2])
+                    break
             cidades = [list(map(float, linhas[i].split()[1:])) for i in range(index, index + n)]
             matriz_distancia = construir_matriz_distancia_euc_2d(cidades)
         else:
@@ -51,6 +54,6 @@ def mochileiro(arquivo):
     percurso, custo_total = vizinho_mais_proximo(matriz_distancia)
     return percurso, custo_total
 
-percurso, custo_total = mochileiro('bays29.tsp')
+percurso, custo_total = mochileiro('pr1002.tsp')
 print(f'PERCURSO: {percurso}\n')
 print(f'DISTANCIA TOTAL: {custo_total}\n')
