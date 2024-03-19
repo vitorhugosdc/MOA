@@ -1,0 +1,13 @@
+PROBLEMA DO CAIXEIRO VIAJANTE
+
+Problema: O vendedor de água, Bira, quer expandir seus negócios dentro de um estado. Determine uma rota que visite todas as cidades e volte à cidade atual de modo que a distância total percorrida pelo vendedor seja a menor possível.
+
+FAÇA UMA HEURÍSTICA QUE RESOLVA O PROBLEMA ANTERIOR.
+
+Instruções: Criar uma função chamada mochileiro, a qual deve ter como entrada o arquivo que contem a matriz de distâncias. A função deve retornar a sequência de cidades visitadas pelo vendedor e, também, a distância total percorrida pelo mesmo.
+
+      mochileiro(arquivo)
+
+Arquivos: Os conjuntos de dados pode ser obtidos em: 
+
+http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/
