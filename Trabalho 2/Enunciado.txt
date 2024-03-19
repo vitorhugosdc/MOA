@@ -1,0 +1,11 @@
+PROBLEMA DA MOCHILA
+
+Problema: Irineu, alpinista experiente, quer carregar sua mochila a fim de maximizar a sua utilizada. Para cada item, o alpinista atribuiu um valor em função de sua utilidade. O "peso" máximo que o alpinista pode carregar em sua mochila é n Kg. 
+
+FAÇA UMA HEURÍSTICA QUE RESOLVA O PROBLEMA ANTERIOR.
+
+Instruções: Criar uma função chamada borsa, a qual deve ter como entrada o arquivo que contem o "peso" e a utilidade do objeto e o peso máximo que o alpinista pode carregar, isto é, n. A função deve retornar os itens que ele vai levar e, também, o peso máximo carregado.
+
+      borsa(arquivo, n)
+
+Arquivos: data_1 data_2
